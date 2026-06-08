@@ -1,0 +1,272 @@
+{
+  "name": "Lead Qualification Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Let's connect...",
+        "formDescription": "Give us the details and we will be in touch with you soon",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What is your name?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Enter your email id",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Enter your company website",
+              "placeholder": "https://www.crewbloom.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What is your inquiry",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -32,
+        -64
+      ],
+      "id": "311a60f7-af0c-4f19-8426-b2599452f2e4",
+      "name": "On form submission",
+      "webhookId": "7b611414-d9e3-4914-8677-e1a0ec0b730a"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api-f1db6c.stack.tryrelevance.com/latest/studios/5b7db1ca-c5a4-48b6-acbf-f66f0610682c/trigger_webhook?project=4ac653ea-b036-40aa-bf07-ff4863fe4f82",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"company_url\":\"{{ $json['Enter your company website'] }}\"}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        192,
+        -64
+      ],
+      "id": "b3b80175-f164-4d71-8223-090319dbe6f2",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an inbound lead qualification agent for AI Shakthi.\n\nAbout AI Shakthi:\nAI Shakthi is a Bangalore-based company specializing in:\n\n* Software Development\n* Agentic AI\n* AI Agents and Copilots\n* Workflow Automation\n* System Integrations\n\nQualification Rules:\n\nQUALIFIED:\n\n* SaaS companies\n* Software product companies\n* Software development companies\n* IT services companies\n* Technology companies\n* Digital product companies\n* Any organization with a genuine requirement for AI agents, workflow automation, software development, system integrations, copilots, or digital transformation\n\nNOT QUALIFIED:\n\n* Companies seeking services unrelated to software, AI, automation, or technology\n* Spam or irrelevant inquiries\n\nActions:\n\nIf qualified:\n\n* Call the tool \"Qualified lead identifier and notifier\"\n* Pass the lead information and qualification reason\n* Do not return a text response\n\nIf not qualified:\n\n* Use the Gmail tool to send a polite rejection email\n* Do not return a text response\n\nImportant:\n\n* Always call one of the available tools.\n* Never provide the qualification result as plain text.\n\nLead Information:\n\nName: {{ $('On form submission').item.json['What is your name?'] }}\n\nCompany URL: {{ $('On form submission').item.json['Enter your company website'] }}\n\nInquiry: {{ $('On form submission').item.json['What is your inquiry'] }}\n\nCompany Research Summary:\n{{ $json.answer }}\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        -64
+      ],
+      "id": "37a775c0-d6df-42e4-88b5-b454d3d69977",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Enter your email id'] }}",
+        "subject": "Regarding Your Inquiry",
+        "emailType": "text",
+        "message": "=Hi {{ $('On form submission').item.json['What is your name?'] }},\n\nThank you for reaching out to AI Shakthi.\n\nWe have reviewed your inquiry. At this time, we may not be the best fit for your specific requirement, as our expertise is focused on AI agents, workflow automation, software development, and system integrations.\n\nBased on our review, your current requirement falls outside our core service offerings.\n\nWe appreciate your interest in AI Shakthi and wish you success in finding the right partner for your needs.\n\nRegards,\n\nSandhiya T S\nCEO\nAI Shakthi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        256
+      ],
+      "id": "50c8d672-4faa-4b76-a3c6-c18f68c1166a",
+      "name": "Send a message in Gmail",
+      "webhookId": "95626ef0-258c-4534-a890-8c39f183492e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JEqN2C15WZPdFyvu",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "=If the lead is qualified, eg, they are into software business like SaaS or development services companies, then trigger this tool and send the lead the data in the following format(the data below given is dummy, you need to replace this data with the correct one):\n\nCall this tool when a lead is qualified according to our criteria. The inputs should be:\n{\n\"name\":\"a name\",\n\"email\":\"abc@g.com\",\n\"message\":\"I want AI agents\",\n\"message\":\"this company is xyz .... it needs to automate workflow\"\n}",
+        "workflowId": {
+          "__rl": true,
+          "value": "OBeUkGm1INV9OOTA",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/OBeUkGm1INV9OOTA",
+          "cachedResultName": "Qualified lead identifier and notifier"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Qualified": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Qualified', `If the lead is qualified as per our criteria, set to true`, 'boolean') }}",
+            "Lead Name": "={{ $('On form submission').item.json['What is your name?'] }}",
+            "Email": "={{ $('On form submission').item.json['Enter your email id'] }}",
+            "Message": "={{ $('On form submission').item.json['What is your inquiry'] }}",
+            "Company Info": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Company_Info', `A short summary of the details of the company and the industry they are in`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead Name",
+              "displayName": "Lead Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Qualified",
+              "displayName": "Qualified",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "boolean",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        144
+      ],
+      "id": "4e7d7954-1218-40d9-bc1f-8fbb3863c32b",
+      "name": "Call 'Qualified lead identifier and notifier'"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        144
+      ],
+      "id": "4c7b7f2c-8e87-4002-b869-2afbe709802b",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zwJcCICxY9Uw8Las",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Qualified lead identifier and notifier'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c5f3bb71-ef5b-4c1f-bea9-55b966922988",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "435d0d21534b9d5f526c865f8927e8f992d8c4689b2dc7f1199e052cf5a2171c"
+  },
+  "nodeGroups": [],
+  "id": "XZCIX70Ifpt87jgQ",
+  "tags": []
+}

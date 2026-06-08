@@ -1,0 +1,208 @@
+{
+  "name": "Qualified lead identifier and notifier",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Lead Name"
+            },
+            {
+              "name": "Email"
+            },
+            {
+              "name": "Message"
+            },
+            {
+              "name": "Company Info"
+            },
+            {
+              "name": "Qualified",
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "02641570-99ef-4faa-bc03-5753f7922a0c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ebe4496-c266-4856-89f6-7a1a1ce18104",
+              "name": "status",
+              "value": "success",
+              "type": "string"
+            },
+            {
+              "id": "6ba4f0e0-af3b-43c8-8aea-9ef99265374e",
+              "name": "qualified",
+              "value": "true",
+              "type": "string"
+            },
+            {
+              "id": "7167db1e-f4c8-4e84-a488-6e1efc183ed5",
+              "name": "message",
+              "value": "Lead processed successfully",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "c44730e7-4322-4396-bec4-5a9b4cdeac0f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b9dcc969-9689-48a0-ad0a-4f8bafbc5788",
+              "leftValue": "={{ $json.qualified }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -48,
+        -16
+      ],
+      "id": "34b0eb9d-804d-476d-8249-4c806c7dc0a4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "=sandhiyats73@gmail.com",
+        "subject": "New Qualified Lead Received",
+        "message": "=New Qualified Lead Details\n\nQualified:{{ $('When Executed by Another Workflow').item.json.Qualified }}  \nHi Team,\nWe have received a new qualified lead and following are the details to take it forward\n\nDetails: {{ $('When Executed by Another Workflow').item.json['Company Info'] }}\n\nReceived from AI Shakthi Lead Qualification Agent.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        -112
+      ],
+      "id": "98b23d72-90b8-462f-aa85-ef5072d26dd1",
+      "name": "Send a message",
+      "webhookId": "1d8ce1c0-2ca8-4bbd-ade0-3c5d6bfaff9c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JEqN2C15WZPdFyvu",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('When Executed by Another Workflow').item.json.Email }}",
+        "subject": "Regarding Your Inquiry",
+        "message": "=Hello {{ $('When Executed by Another Workflow').item.json['Lead Name'] }},  \n\nThank you for contacting AI Shakthi.  We have reviewed your inquiry and, at this time, we do not believe our services are the best fit for your current requirements.  AI Shakthi primarily focuses on software development, Agentic AI solutions, AI-powered automation, and workflow automation for software and technology-focused organizations.  We appreciate your interest and wish you success in finding the right solution for your needs.  \n\nRegards, \nAI Shakthi Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        80
+      ],
+      "id": "38833bd9-f841-4835-abeb-33a3e64bb303",
+      "name": "Send a message1",
+      "webhookId": "736e061d-ec74-4935-8aec-f2fc86826a29",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JEqN2C15WZPdFyvu",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9c185ec8-85f5-4805-8bc7-05027d0d4c26",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "435d0d21534b9d5f526c865f8927e8f992d8c4689b2dc7f1199e052cf5a2171c"
+  },
+  "nodeGroups": [],
+  "id": "OBeUkGm1INV9OOTA",
+  "tags": []
+}
