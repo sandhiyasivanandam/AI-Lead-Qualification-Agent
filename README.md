@@ -86,7 +86,7 @@ The workflow evaluates the qualification status and routes the lead accordingly.
 
 ### Lead Qualification Workflow
 
-![Lead Qualification Workflow](screenshots/workflow-1.png)
+![Lead Qualification Workflow](screenshots/AI_Lead_Qualification_Agent.png)
 
 ### Lead Notification Workflow
 
