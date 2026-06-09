@@ -160,16 +160,16 @@ AI-Lead-Qualification-Agent
 ├── README.md
 │
 ├── docs
-│   └── architecture-diagram.png
+│   └── Architecture_Lead_Qualification.png
 │
 ├── workflows
 │   ├── lead-qualification-agent.json
 │   └── qualified-lead-notifier.json
 │
 └── screenshots
-    ├── workflow-1.png
-    ├── workflow-2.png
-    └── sample-execution.png
+    ├── AI_Lead_Qualification_Agent.png
+    ├── Qualified_Lead_Identifier_and_Notifier.png
+    └── AI_Lead_qualification_Workflow.png
 ```
 
 ---
