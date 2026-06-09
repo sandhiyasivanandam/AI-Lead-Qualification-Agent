@@ -90,7 +90,7 @@ The workflow evaluates the qualification status and routes the lead accordingly.
 
 ### Lead Notification Workflow
 
-![Lead Notification Workflow](screenshots/workflow-2.png)
+![Lead Notification Workflow](screenshots/Qualified_Lead_Identifier_and_Notifier.png.png)
 
 ### Sample Execution
 
