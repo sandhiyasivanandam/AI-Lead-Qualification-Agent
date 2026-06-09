@@ -26,7 +26,7 @@ This solution automates the process by:
 
 ## Solution Architecture
 
-![Architecture Diagram](docs/architecture-diagram.png)
+![Architecture Diagram](docs/Architecture_Lead_Qualification.png)
 
 ---
 
