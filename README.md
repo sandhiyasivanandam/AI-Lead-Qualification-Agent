@@ -94,7 +94,7 @@ The workflow evaluates the qualification status and routes the lead accordingly.
 
 ### Sample Execution
 
-![Sample Execution](screenshots/sample-execution.png)
+![Sample Execution](screenshots/AI_Lead_qualification_Workflow.png)
 
 ---
 
